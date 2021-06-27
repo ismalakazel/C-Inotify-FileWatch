@@ -11,13 +11,19 @@
 /// (inotify)[https://man7.org/linux/man-pages/man7/inotify.7.html]
 ///
 /// - Parameter argc: argv count.
-/// - Parameter *argv: The file path that needs to be monitored.
+/// - Parameter *argv[1]: The file path that needs to be monitored.
+/// - Parameter *argv[2]: The system command to be executed upon file change.
 int main(int argc, char *argv[]) {
 
+  /// Print arguments.
+  printf("\n");
   printf("File path: %s \n", argv[1]);
+  printf("Command: %s \n", argv[2]);
 
-  /// Watch for events in path.
   const char *path = argv[1];
+  const char *command = argv[2];
+
+  /// Watch for changes in path.
   const int fd = inotify_init();
   const int wd = inotify_add_watch(fd, path, IN_ALL_EVENTS);
 
@@ -52,8 +58,10 @@ int main(int argc, char *argv[]) {
         char buffer[BUFFER_SIZE]; 
         read(fd, buffer, BUFFER_SIZE);
         struct inotify_event *event = (struct inotify_event *) &buffer[0];
-        if (event->mask & IN_MODIFY)
-          printf("File modified \n");
+        if (event->mask & IN_MODIFY) {
+          printf("File modified\n");
+          system(command);
+        }
       }
     }
   }
