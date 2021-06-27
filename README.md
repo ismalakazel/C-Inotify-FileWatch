@@ -33,7 +33,7 @@ $ gcc -o watch.out watch.c
 Run the program.
 
 ```bash
-./watch.out file.txt firefox &
+./watch.out file.txt firefox
 ```
 
 * `file.txt` is the file that's being monitored for changes.
